@@ -216,7 +216,7 @@ class webAPI():
                 "need_subscription": false, 
                 "is_security": false, 
                 "is_admin": false, 
-                "promo_code": "SSEWELL", 
+                "promo_code": "JBLOGGS", 
                 "city": "", 
                 "is_b2b": false, 
                 "creation_date": "2015-12-13T12:23:01.213784", 
