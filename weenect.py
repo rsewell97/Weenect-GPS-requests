@@ -59,7 +59,7 @@ class webAPI():
         else:
             return self.s.get(self.api_url+'/v4/myuser',headers=self.headers)
 
-    def getTracker(self):
+    def getTrackers(self):
         return self.s.get(self.api_url+'/v4/mytracker',headers=self.headers)
 
     def TrackerNotifications(self, tracker_id, mail_contacts=[], sms_contacts=[]):
