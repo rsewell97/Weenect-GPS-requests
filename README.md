@@ -1,11 +1,13 @@
 # Weenect-GPS-requests
 
-Python library for interacting with Weenect GPS api. No liability is accepted for the use of this code - it was reverse engineered for use in a personal project. Seeking to add entry to PyPI.
+Python library for interacting with Weenect GPS api. No liability is accepted for the use of this code - it was reverse engineered for use in a personal project.
+
+## Installation
+`pip install weenect-gps-api`
 
 ## Usage
 ```
 import weenect
-import pprint
 
 username = 'john.appleseed@domain.com',
 password = 'p4ssw0rd'
