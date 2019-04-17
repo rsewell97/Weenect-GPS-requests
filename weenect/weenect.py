@@ -87,7 +87,7 @@ class webAPI():
             "position": [{
                 "id": "XXXXXXXXXXXXXXXX", 
                 "latitude": 50.00, 
-                "geofence_name": "Zahra ", 
+                "geofence_name": "NAME ", 
                 "cid": 0, 
                 "mcc": 0, 
                 "original_battery": 99, 
