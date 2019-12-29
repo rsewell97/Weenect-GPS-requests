@@ -1,4 +1,5 @@
 import requests
+import json
 from bs4 import BeautifulSoup as bs
 
 __name__ = "weenect-gps"
@@ -7,46 +8,36 @@ class webAPI():
     def __init__(self, username, password):
         self.s = requests.Session()
         self.base_url = 'https://my.weenect.com'
-        self.api_url = 'https://apiv4.weenect.com'
+        self.api_url = 'https://apiv4.weenect.com/v4'
         self.headers = {
-            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36'
+            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36'
         }
-
         self.login(username,password)
 
     #SESSION METHODS
     def login(self, user, passw):
-        r = self.s.get(self.base_url+'/en/login')
-
-        csrf = bs(r.text,'html.parser').find('input').get('value')
-
-        self.headers['Content-Type'] = 'application/x-www-form-urlencoded'
-        self.s.post(self.base_url+'/en/login', headers=self.headers,data={
-            'csrf_token': csrf,
-            'redirect_url': '/en/',
+        # self.s.get(self.base_url, headers=self.headers)
+        self.headers = {
+            'Origin': self.base_url,
+            'content-type': 'application/json',
+            'accept': 'application/json',
+            'x-app-version': '0.1.0',
+            'x-app-user-id': '',
+            'x-app-type': 'userspace',
+            'DNT': '1'
+        }
+        
+        r = self.s.post(self.api_url+'/user/login', headers=self.headers, json={
             'username': user,
             'password': passw
         })
 
-        r = self.s.get(self.base_url+'/en/')
-        
-        script_tag = bs(r.text,'html.parser').find_all('script')[1].string
-        lines = script_tag.split(',\n')[1:-6]
-        parsed = '{'
-
-        for i in lines:
-            parsed += i+','
-        parsed.replace('"',"'")
-        parsed = parsed[:-1]+'}'
-        parsed = eval(parsed)
-        
-        self.token = parsed['token']
-        self.version = parsed['version']
-
+        self.token = json.loads(r.text)["access_token"]
+        # self.version = r.text['version']
         self.headers['Authorization'] = 'JWT '+ self.token
 
     def getSubscription(self,sub_id='status'):
-        return self.s.get(self.api_url+'/v4/mysubscription/'+str(sub_id),headers=self.headers)
+        return self.s.get(self.api_url+'/mysubscription/'+str(sub_id),headers=self.headers)
 
     def getWebLocales(self):
         return self.s.get(self.base_url+'/static/locales/en.json')
@@ -57,15 +48,15 @@ class webAPI():
     #USER/TRACKER INFO METHODS
     def getUser(self, user_id):
         if user_id != '': 
-            return self.s.get(self.api_url+'/v4/user'+str(user_id),headers=self.headers)
+            return self.s.get(self.api_url+'/user'+str(user_id),headers=self.headers)
         else:
-            return self.s.get(self.api_url+'/v4/myuser',headers=self.headers)
+            return self.s.get(self.api_url+'/myuser',headers=self.headers)
 
     def getTrackers(self):
-        return self.s.get(self.api_url+'/v4/mytracker',headers=self.headers)
+        return self.s.get(self.api_url+'/mytracker',headers=self.headers)
 
     def TrackerNotifications(self, tracker_id, mail_contacts=[], sms_contacts=[]):
-        self.s.post(self.api_url+'/v4/mytracker/{}/contacts'.format(tracker_id),data={
+        self.s.post(self.api_url+'/mytracker/{}/contacts'.format(tracker_id),data={
             'mail_contacts': mail_contacts,
             'sms_contacts': sms_contacts
         },headers=self.headers)
@@ -242,12 +233,12 @@ class webAPI():
             }
         }
         """
-        self.s.put(self.api_url+'/v4/mytracker/{}'.format(tracker_id),data=info,headers=self.headers)
+        self.s.put(self.api_url+'/mytracker/{}'.format(tracker_id),data=info,headers=self.headers)
 
 
     #SAFEZONE METHODS
     def getSafeZones(self, tracker_id):
-        return self.s.get(self.api_url+'/v4/mytracker/{}/zones'.format(tracker_id),headers=self.headers)
+        return self.s.get(self.api_url+'/mytracker/{}/zones'.format(tracker_id),headers=self.headers)
 
     def addSafeZone(self, tracker_id, name, latlong, radius, number, address='', is_outside=False, notif_mode=0):
         """
@@ -258,7 +249,7 @@ class webAPI():
         2=exit only
         3=both enter and exit
         """
-        return self.s.post(self.api_url+'/v4/mytracker/{}/zones'.format(tracker_id), data={
+        return self.s.post(self.api_url+'/mytracker/{}/zones'.format(tracker_id), data={
             'name': name,
             'latitude': latlong[0],
             'longitude': latlong[1],
@@ -270,31 +261,31 @@ class webAPI():
         },headers=self.headers)
 
     def removeSafeZone(self, tracker_id, zone_id):
-        return self.s.delete(self.api_url+'/v4/mytracker/{}/zones{}'.format(tracker_id),zone_id,headers=self.headers)
+        return self.s.delete(self.api_url+'/mytracker/{}/zones{}'.format(tracker_id,zone_id),headers=self.headers)
 
     #TRACKER INTERACT METHODS
     def refreshTracker(self, tracker_id):
-        return self.s.post(self.api_url+'/v4/mytracker/{}/position/refresh'.format(tracker_id),headers=self.headers)
+        return self.s.post(self.api_url+'/mytracker/{}/position/refresh'.format(tracker_id),headers=self.headers)
     
     def SOSCall(self, tracker_id, phone_num):
-        return self.s.post(self.api_url+'/v4/mytracker/{}/sos'.format(tracker_id),data={
+        return self.s.post(self.api_url+'/mytracker/{}/sos'.format(tracker_id),data={
             'phone_number': phone_num
         },headers=self.headers)
 
     def startUltraLiveMode(self, tracker_id):
-        return self.s.post(self.api_url+'/v4/mytracker/{}/st-mode'.format(tracker_id),headers=self.headers)
+        return self.s.post(self.api_url+'/mytracker/{}/st-mode'.format(tracker_id),headers=self.headers)
 
     #OTHER METHODS
     def getHistoricalLocations(self, tracker_id, params={}):
         """e.g. ?end=2019-04-16T23:05:00.000Z&start=2019-04-15T23:05:00.000Z"""
-        self.s.get(self.api_url+'/v4/mytracker/{}/position',params=params,headers=self.headers)
+        self.s.get(self.api_url+'/mytracker/{}/position',params=params,headers=self.headers)
 
     def recordedItinerary(self, params={}):
         """e.g. ?page=1&sort_field=start_at&sort_order=desc&tracker_ids%5B%5D=12345"""
-        return self.s.get(self.api_url+'/v4/myitinerary',params=params)
+        return self.s.get(self.api_url+'/myitinerary',params=params)
 
     def getKIndex(self):
         """planetary magnetic field disturbance"""
-        return self.s.get(self.api_url+'/v4/kindex',headers=self.headers)
+        return self.s.get(self.api_url+'/kindex',headers=self.headers)
 
 
