@@ -233,7 +233,7 @@ class webAPI():
             }
         }
         """
-        return self.s.put(self.api_url+'/mytracker/{}'.format(tracker_id),data=info,headers=self.headers)
+        self.s.put(self.api_url+'/mytracker/{}'.format(tracker_id),data=info,headers=self.headers)
 
 
     #SAFEZONE METHODS
@@ -278,14 +278,14 @@ class webAPI():
     #OTHER METHODS
     def getHistoricalLocations(self, tracker_id, params={}):
         """e.g. ?end=2019-04-16T23:05:00.000Z&start=2019-04-15T23:05:00.000Z"""
-        return self.s.get(self.api_url+'/mytracker/{}/position'.format(tracker_id), params=params, headers=self.headers)
+        self.s.get(self.api_url+'/mytracker/{}/position',params=params,headers=self.headers)
 
     def recordedItinerary(self, params={}):
         """e.g. ?page=1&sort_field=start_at&sort_order=desc&tracker_ids%5B%5D=12345"""
-        return self.s.get(self.api_url+'/myitinerary', params=params)
+        return self.s.get(self.api_url+'/myitinerary',params=params)
 
     def getKIndex(self):
         """planetary magnetic field disturbance"""
-        return self.s.get(self.api_url+'/kindex', headers=self.headers)
+        return self.s.get(self.api_url+'/kindex',headers=self.headers)
 
 

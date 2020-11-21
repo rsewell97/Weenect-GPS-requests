@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="weenect-gps-api",
-    version="1.1.0",
+    version="1.2.0",
     author="Robbie Sewell",
     author_email="rsewell97@gmail.com",
     description="A package for accessing the Weenect-GPS api",

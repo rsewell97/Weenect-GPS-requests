@@ -1,0 +1,38 @@
+Metadata-Version: 2.1
+Name: weenect-gps-api
+Version: 1.2.0
+Summary: A package for accessing the Weenect-GPS api
+Home-page: https://github.com/rsewell97/Weenect-GPS-requests
+Author: Robbie Sewell
+Author-email: rsewell97@gmail.com
+License: UNKNOWN
+Description: # Weenect-GPS-requests
+        
+        Python library for interacting with Weenect GPS api. No liability is accepted for the use of this code - it was reverse engineered for use in a personal project.
+        
+        ## Installation
+        `pip install weenect-gps-api`
+        
+        ## Usage
+        ```
+        import weenect
+        
+        username = 'john.appleseed@domain.com',
+        password = 'p4ssw0rd'
+        
+        web = weenect.webAPI(username,password)
+        
+        #returns requests.Response object
+        r = web.getTrackers()
+        print(r.status_code)
+        print(r.json())
+        
+        web.logout()
+        ```
+        
+        If you have any problems, open an issue and I'll help you out
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Description-Content-Type: text/markdown

@@ -1,0 +1,7 @@
+README.md
+setup.py
+weenect/__init__.py
+weenect_gps_api.egg-info/PKG-INFO
+weenect_gps_api.egg-info/SOURCES.txt
+weenect_gps_api.egg-info/dependency_links.txt
+weenect_gps_api.egg-info/top_level.txt
